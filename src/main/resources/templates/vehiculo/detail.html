@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'vehiculos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">eyebrow.manage</p>
+            <h1 class="page-title" th:text="${vehiculo.placa}">Title</h1>
+        </div>
+        <a th:href="@{/vehiculos}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">Back</span></a>
+    </header>
+
+    <section class="table-section">
+        <dl class="detail-grid">
+            <div class="detail-item"><dt th:text="#{vehicle.color}">vehicle.color</dt><dd th:text="#{${'enum.color.' + vehiculo.colorPlaca.name()}}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{common.status}">common.status</dt><dd><span th:if="${vehiculo.estadoVehiculo}" class="badge badge-success" th:text="#{common.active}">Active</span>
+                <span th:unless="${vehiculo.estadoVehiculo}" class="badge badge-neutral" th:text="#{common.inactive}">Inactive</span></dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.brand}">vehicle.brand</dt><dd th:text="${vehiculo.modelo.marca}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.model}">vehicle.model</dt><dd th:text="${vehiculo.modelo.nombreModelo}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.owner}">vehicle.owner</dt><dd th:text="${vehiculo.nombreDueno}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.ownerDoc}">vehicle.ownerDoc</dt><dd th:text="${vehiculo.documentoDueno}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.ownerPhone}">vehicle.ownerPhone</dt><dd th:text="${vehiculo.telefonoDueno}">x</dd></div>
+        </dl>
+        <a th:if="${esAdmin}" th:href="@{/vehiculos/{id}/edit(id=${vehiculo.idVehiculo})}" class="welcome-cta"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">Edit</span></a>
+    </section>
+</div>
+</body>
+</html>

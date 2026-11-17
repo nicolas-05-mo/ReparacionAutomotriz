@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'reparaciones', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Gestión</p>
+            <h1 class="page-title" th:text="${title}">Detalle</h1>
+        </div>
+        <a th:href="@{/reparaciones}" class="btn-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    </header>
+
+    <section class="table-section">
+        <dl class="detail-grid">
+            <div class="detail-item"><dt>Fecha</dt><dd th:text="${reparacion.fecha}">Fecha</dd></div>
+            <div class="detail-item"><dt>Estado</dt>
+                <dd>
+                    <span th:if="${reparacion.estado.name() == 'EN_PROCESO'}" class="badge badge-warning">En proceso</span>
+                    <span th:if="${reparacion.estado.name() == 'TERMINADO'}" class="badge badge-success">Terminado</span>
+                    <span th:if="${reparacion.estado.name() == 'CANCELADO'}" class="badge badge-neutral">Cancelado</span>
+                </dd>
+            </div>
+            <div class="detail-item"><dt>Tipo</dt><dd th:text="${#strings.replace(reparacion.tipo, '_', ' ')}">Tipo</dd></div>
+            <div class="detail-item"><dt>Mecánico</dt><dd th:text="${reparacion.mecanico.nombre + ' ' + reparacion.mecanico.apellido}">Mecánico</dd></div>
+            <div class="detail-item"><dt>Vehículo</dt>
+                <dd th:text="${reparacion.vehiculo.placa + ' - ' + reparacion.vehiculo.modelo.marca + ' ' + reparacion.vehiculo.modelo.nombreModelo}">Vehículo</dd></div>
+            <div class="detail-item"><dt>Dueño</dt><dd th:text="${reparacion.vehiculo.nombreDueno}">Dueño</dd></div>
+            <div class="detail-item detail-item--wide"><dt>Observaciones</dt>
+                <dd th:text="${reparacion.observaciones != null and reparacion.observaciones != ''} ? ${reparacion.observaciones} : '-'">-</dd></div>
+        </dl>
+        <a th:if="${reparacion.estado.name() == 'EN_PROCESO'}"
+           th:href="@{/reparaciones/{id}/edit(id=${reparacion.idReparacion})}" class="welcome-cta"><i class="bi bi-pencil"></i> Editar</a>
+    </section>
+</div>
+</body>
+</html>

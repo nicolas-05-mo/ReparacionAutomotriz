@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'reparaciones', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Gestión</p>
+            <h1 class="page-title" th:text="${title}">Formulario</h1>
+        </div>
+        <a th:href="@{/reparaciones}" class="btn-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{${formAction}}" th:object="${reparacion}" method="post" class="crud-form">
+            <div class="alert alert-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" th:field="*{fecha}">
+                    <small class="field-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="tipo">Tipo de reparación</label>
+                    <select id="tipo" th:field="*{tipo}">
+                        <option value="">Seleccione</option>
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${#strings.replace(t, '_', ' ')}">Tipo</option>
+                    </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group--wide">
+                    <label for="vehiculo">Vehículo</label>
+                    <select id="vehiculo" name="vehiculo">
+                        <option value="">Seleccione un vehículo</option>
+                        <option th:each="v : ${vehiculosOpciones}" th:value="${v.idVehiculo}"
+                                th:text="${v.placa + ' - ' + v.modelo.marca + ' ' + v.modelo.nombreModelo}"
+                                th:selected="${reparacion.vehiculo != null and reparacion.vehiculo.idVehiculo == v.idVehiculo}">Vehículo</option>
+                    </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('vehiculo')}" th:errors="*{vehiculo}"></small>
+                </div>
+
+                <!-- Administrador elige el mecánico; el mecánico queda asignado él mismo -->
+                <div class="form-group" th:if="${esAdmin}">
+                    <label for="mecanico">Mecánico responsable</label>
+                    <select id="mecanico" name="mecanico">
+                        <option value="">Seleccione un mecánico</option>
+                        <option th:each="u : ${mecanicosOpciones}" th:value="${u.idUsuario}"
+                                th:text="${u.nombre + ' ' + u.apellido}"
+                                th:selected="${reparacion.mecanico != null and reparacion.mecanico.idUsuario == u.idUsuario}">Mecánico</option>
+                    </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('mecanico')}" th:errors="*{mecanico}"></small>
+                </div>
+                <input type="hidden" name="mecanico" th:unless="${esAdmin}" th:value="${mecanicoActual.idUsuario}">
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones">Observaciones (opcional)</label>
+                <textarea id="observaciones" th:field="*{observaciones}" rows="3" maxlength="500"></textarea>
+                <small class="field-error" th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}"></small>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/reparaciones}" class="btn-secondary">Cancelar</a>
+                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> Guardar</button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>

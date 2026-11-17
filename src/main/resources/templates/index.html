@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout('nav.home', 'home', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <section class="welcome-hero">
+        <p class="eyebrow" th:text="#{home.eyebrow}">x</p>
+        <h1 class="welcome-title" th:text="#{home.title}">x</h1>
+        <p class="welcome-subtitle" th:text="#{home.subtitle}">x</p>
+    </section>
+
+    <section class="stats-grid">
+        <a th:href="@{/modelos}" class="stat-card stat-card--navy">
+            <i class="bi bi-car-front stat-icon"></i>
+            <p class="stat-label" th:text="#{home.models}">home.models</p>
+            <p class="stat-value" th:text="${totalModelos}">0</p>
+        </a>
+        <a th:href="@{/vehiculos}" class="stat-card stat-card--navy">
+            <i class="bi bi-card-text stat-icon"></i>
+            <p class="stat-label" th:text="#{home.vehicles}">home.vehicles</p>
+            <p class="stat-value" th:text="${totalVehiculos}">0</p>
+        </a>
+        <a th:href="@{/repuestos}" class="stat-card stat-card--navy">
+            <i class="bi bi-gear stat-icon"></i>
+            <p class="stat-label" th:text="#{home.parts}">home.parts</p>
+            <p class="stat-value" th:text="${totalRepuestos}">0</p>
+        </a>
+        <a th:href="@{/reparaciones}" class="stat-card stat-card--gold">
+            <i class="bi bi-tools stat-icon"></i>
+            <p class="stat-label" th:text="#{home.repairs}">home.repairs</p>
+            <p class="stat-value" th:text="${reparacionesEnProceso}">0</p>
+        </a>
+    </section>
+
+    <a th:href="@{/reparaciones/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> <span th:text="#{home.newRepair}">x</span></a>
+</div>
+</body>
+</html>

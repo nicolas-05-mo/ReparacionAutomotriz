@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'modelos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.catalog}">eyebrow.catalog</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:href="@{/modelos}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">Back</span></a>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{${formAction}}" th:object="${modelo}" method="post" class="crud-form">
+            <div class="alert alert-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marca" th:text="#{model.brand}">model.brand</label>
+                    <input type="text" id="marca" th:field="*{marca}" maxlength="60">
+                    <small class="field-error" th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="nombreModelo" th:text="#{model.name}">model.name</label>
+                    <input type="text" id="nombreModelo" th:field="*{nombreModelo}" maxlength="100">
+                    <small class="field-error" th:if="${#fields.hasErrors('nombreModelo')}" th:errors="*{nombreModelo}"></small>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/modelos}" class="btn-secondary" th:text="#{common.cancel}">Cancel</a>
+                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> <span th:text="#{common.save}">Save</span></button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>

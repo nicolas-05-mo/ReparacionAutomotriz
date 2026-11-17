@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'roles', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.admin}">eyebrow.admin</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <table class="loans-table">
+            <thead><tr><th th:text="#{role.name}">x</th><th th:text="#{role.description}">x</th></tr></thead>
+            <tbody>
+            <tr th:each="r : ${roles}" th:switch="${r.rol}">
+                <td th:text="${r.rol}">ROL</td>
+                <td th:case="'ADMINISTRADOR'" th:text="#{role.ADMINISTRADOR.desc}">x</td>
+                <td th:case="'MECANICO'" th:text="#{role.MECANICO.desc}">x</td>
+                <td th:case="*">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'repuestos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow" th:text="#{eyebrow.manage}">eyebrow.manage</p>
+      <h1 class="page-title" th:text="${repuesto.nombre}">Title</h1>
+    </div>
+    <a th:href="@{/repuestos}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">Back</span></a>
+  </header>
+
+  <section class="table-section">
+    <dl class="detail-grid">
+      <div class="detail-item"><dt th:text="#{part.eanShort}">part.eanShort</dt><dd th:text="${repuesto.codigoEan}">x</dd></div>
+      <div class="detail-item"><dt th:text="#{common.status}">common.status</dt><dd><span th:if="${repuesto.estadoRepuesto}" class="badge badge-success" th:text="#{common.active}">Active</span>
+        <span th:unless="${repuesto.estadoRepuesto}" class="badge badge-neutral" th:text="#{common.inactive}">Inactive</span></dd></div>
+      <div class="detail-item"><dt th:text="#{part.priceShort}">part.priceShort</dt><dd th:text="${'$ ' + #numbers.formatDecimal(repuesto.precio, 1, 'DEFAULT', 2, 'DEFAULT')}">x</dd></div>
+      <div class="detail-item"><dt th:text="#{part.stock}">part.stock</dt><dd th:text="${repuesto.stock}">x</dd></div>
+      <div class="detail-item detail-item--wide"><dt th:text="#{part.models}">part.models</dt><dd th:text="${#strings.listJoin(repuesto.modelos.![marca + ' ' + nombreModelo], ', ')}">x</dd></div>
+      <div class="detail-item detail-item--wide"><dt th:text="#{part.desc}">part.desc</dt><dd th:text="${repuesto.descripcion != null and repuesto.descripcion != ''} ? ${repuesto.descripcion} : '-'">-</dd></div>
+      <div class="detail-item detail-item--wide"><dt th:text="#{part.imageShort}">part.imageShort</dt><dd th:text="${repuesto.imagen != null and repuesto.imagen != ''} ? ${repuesto.imagen} : '-'">-</dd></div>
+    </dl>
+    <a th:if="${esAdmin}" th:href="@{/repuestos/{id}/edit(id=${repuesto.idRepuesto})}" class="welcome-cta"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">Edit</span></a>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout('denied.title', 'home', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{denied.eyebrow}">denied.eyebrow</p>
+            <h1 class="page-title" th:text="#{denied.title}">Title</h1>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <p th:text="#{denied.text}">x</p>
+        <a th:href="@{/}" class="welcome-cta"><i class="bi bi-house-door"></i> <span th:text="#{denied.back}">x</span></a>
+    </section>
+</div>
+</body>
+</html>

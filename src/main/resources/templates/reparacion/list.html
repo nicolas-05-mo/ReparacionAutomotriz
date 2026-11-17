@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'reparaciones', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Gestión</p>
+            <h1 class="page-title" th:text="${title}">Reparaciones</h1>
+        </div>
+        <a th:href="@{/reparaciones/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> Nueva reparación</a>
+    </header>
+
+    <section class="table-section">
+        <table class="loans-table">
+            <thead>
+            <tr><th>Fecha</th><th>Vehículo</th><th>Tipo</th><th>Mecánico</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(reparaciones)}"><td colspan="6" class="empty-row">No hay reparaciones registradas</td></tr>
+            <tr th:each="r : ${reparaciones}">
+                <td th:text="${r.fecha}">2026-11-13</td>
+                <td th:text="${r.vehiculo.placa}">ABC-123</td>
+                <td th:text="${#strings.replace(r.tipo, '_', ' ')}">Tipo</td>
+                <td th:text="${r.mecanico.nombre + ' ' + r.mecanico.apellido}">Mecánico</td>
+                <td>
+                    <span th:if="${r.estado.name() == 'EN_PROCESO'}" class="badge badge-warning">En proceso</span>
+                    <span th:if="${r.estado.name() == 'TERMINADO'}" class="badge badge-success">Terminado</span>
+                    <span th:if="${r.estado.name() == 'CANCELADO'}" class="badge badge-neutral">Cancelado</span>
+                </td>
+                <td>
+                    <div class="row-actions">
+                        <a th:href="@{/reparaciones/{id}(id=${r.idReparacion})}" class="action-link" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                        <th:block th:if="${r.estado.name() == 'EN_PROCESO'}">
+                            <a th:href="@{/reparaciones/{id}/edit(id=${r.idReparacion})}" class="action-link" title="Editar"><i class="bi bi-pencil"></i></a>
+                            <form th:action="@{/reparaciones/{id}/estado(id=${r.idReparacion})}" method="post" class="inline-form">
+                                <input type="hidden" name="estado" value="TERMINADO">
+                                <button type="submit" class="action-link action-link--success" title="Marcar como terminada"><i class="bi bi-check-circle"></i></button>
+                            </form>
+                            <form th:action="@{/reparaciones/{id}/estado(id=${r.idReparacion})}" method="post" class="inline-form">
+                                <input type="hidden" name="estado" value="CANCELADO">
+                                <button type="submit" class="action-link action-link--danger" title="Cancelar reparación"><i class="bi bi-x-circle"></i></button>
+                            </form>
+                        </th:block>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'busq-placa', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.queries}">eyebrow.queries</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{/busquedas/modelo-por-placa}" method="get" class="search-form">
+            <div class="form-group">
+                <label for="placa" th:text="#{search.plate.label}">x</label>
+                <input type="text" id="placa" name="placa" th:value="${placaIngresada}" maxlength="7" placeholder="ABC-123">
+            </div>
+            <button type="submit" class="welcome-cta"><i class="bi bi-search"></i> <span th:text="#{common.search}">x</span></button>
+        </form>
+
+        <div th:if="${errorFormato}" class="alert alert-danger" th:text="#{${errorFormato}}">x</div>
+        <div th:if="${noRegistrada}" class="alert alert-danger" th:text="#{search.plate.notFound}">x</div>
+        <dl class="detail-grid" th:if="${vehiculo}">
+            <div class="detail-item"><dt th:text="#{vehicle.plateShort}">x</dt><dd th:text="${vehiculo.placa}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.color}">x</dt><dd th:text="#{${'enum.color.' + vehiculo.colorPlaca.name()}}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.brand}">x</dt><dd th:text="${vehiculo.modelo.marca}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{vehicle.model}">x</dt><dd th:text="${vehiculo.modelo.nombreModelo}">x</dd></div>
+        </dl>
+    </section>
+</div>
+</body>
+</html>

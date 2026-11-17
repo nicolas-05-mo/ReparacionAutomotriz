@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'busq-repuestos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.queries}">eyebrow.queries</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{/busquedas/repuestos-por-modelo}" method="get" class="search-form">
+            <div class="form-group">
+                <label for="idModelo" th:text="#{vehicle.model}">x</label>
+                <select id="idModelo" name="idModelo" required>
+                    <option value="" th:text="#{vehicle.selectModel}">x</option>
+                    <option th:each="m : ${modelos}" th:value="${m.idModelo}"
+                            th:text="${m.marca + ' ' + m.nombreModelo}"
+                            th:selected="${idModeloSel != null and idModeloSel == m.idModelo}">x</option>
+                </select>
+            </div>
+            <button type="submit" class="welcome-cta"><i class="bi bi-search"></i> <span th:text="#{common.search}">x</span></button>
+        </form>
+
+        <div th:if="${buscado}">
+            <div th:if="${#lists.isEmpty(repuestos)}" class="alert alert-danger" th:text="#{search.parts.empty}">x</div>
+            <table class="loans-table" th:unless="${#lists.isEmpty(repuestos)}">
+                <thead><tr><th th:text="#{part.name}">x</th><th th:text="#{part.eanShort}">x</th><th th:text="#{part.priceShort}">x</th><th th:text="#{part.stock}">x</th></tr></thead>
+                <tbody>
+                <tr th:each="r : ${repuestos}">
+                    <td th:text="${r.nombre}">x</td>
+                    <td th:text="${r.codigoEan}">x</td>
+                    <td th:text="${'$ ' + #numbers.formatDecimal(r.precio, 1, 'DEFAULT', 2, 'DEFAULT')}">x</td>
+                    <td th:text="${r.stock}">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+</body>
+</html>

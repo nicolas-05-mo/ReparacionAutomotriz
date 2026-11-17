@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'modelos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.catalog}">eyebrow.catalog</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:if="${esAdmin}" th:href="@{/modelos/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> <span th:text="#{model.new}">New</span></a>
+    </header>
+
+    <section class="table-section">
+        <table class="loans-table">
+            <thead><tr><th th:text="#{model.brand}">model.brand</th><th th:text="#{model.nameShort}">model.nameShort</th><th th:text="#{common.status}">common.status</th><th th:text="#{common.actions}">common.actions</th></tr></thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(modelos)}"><td colspan="4" class="empty-row" th:text="#{model.empty}">Empty</td></tr>
+            <tr th:each="m : ${modelos}">
+                <td th:text="${m.marca}">x</td>
+                <td th:text="${m.nombreModelo}">x</td>
+                <td><span th:if="${m.estadoModelo}" class="badge badge-success" th:text="#{common.active}">Active</span>
+                    <span th:unless="${m.estadoModelo}" class="badge badge-neutral" th:text="#{common.inactive}">Inactive</span></td>
+                <td><div class="row-actions">
+                    <a th:href="@{/modelos/{id}(id=${m.idModelo})}" class="action-link" th:title="#{common.view}"><i class="bi bi-eye"></i></a>
+                    <a th:if="${esAdmin}" th:href="@{/modelos/{id}/edit(id=${m.idModelo})}" class="action-link" th:title="#{common.edit}"><i class="bi bi-pencil"></i></a>
+                    <form th:if="${esAdmin}" th:action="@{/modelos/{id}/state(id=${m.idModelo})}" method="post" class="inline-form">
+                        <button type="submit" class="action-link"
+                                th:classappend="${m.estadoModelo} ? 'action-link--danger' : 'action-link--success'"
+                                th:title="${m.estadoModelo} ? #{common.disable} : #{common.enable}">
+                            <i class="bi" th:classappend="${m.estadoModelo} ? 'bi-slash-circle' : 'bi-arrow-counterclockwise'"></i>
+                        </button>
+                    </form>
+                </div></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>

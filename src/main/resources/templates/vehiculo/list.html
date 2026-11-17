@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'vehiculos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">eyebrow.manage</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:if="${esAdmin}" th:href="@{/vehiculos/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> <span th:text="#{vehicle.new}">New</span></a>
+    </header>
+
+    <section class="table-section">
+        <table class="loans-table">
+            <thead><tr><th th:text="#{vehicle.plateShort}">vehicle.plateShort</th><th th:text="#{vehicle.colorShort}">vehicle.colorShort</th><th th:text="#{vehicle.model}">vehicle.model</th><th th:text="#{vehicle.owner}">vehicle.owner</th><th th:text="#{common.status}">common.status</th><th th:text="#{common.actions}">common.actions</th></tr></thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(vehiculos)}"><td colspan="6" class="empty-row" th:text="#{vehicle.empty}">Empty</td></tr>
+            <tr th:each="v : ${vehiculos}">
+                <td th:text="${v.placa}">x</td>
+                <td th:text="#{${'enum.color.' + v.colorPlaca.name()}}">x</td>
+                <td th:text="${v.modelo.marca + ' ' + v.modelo.nombreModelo}">x</td>
+                <td th:text="${v.nombreDueno}">x</td>
+                <td><span th:if="${v.estadoVehiculo}" class="badge badge-success" th:text="#{common.active}">Active</span>
+                    <span th:unless="${v.estadoVehiculo}" class="badge badge-neutral" th:text="#{common.inactive}">Inactive</span></td>
+                <td><div class="row-actions">
+                    <a th:href="@{/vehiculos/{id}(id=${v.idVehiculo})}" class="action-link" th:title="#{common.view}"><i class="bi bi-eye"></i></a>
+                    <a th:if="${esAdmin}" th:href="@{/vehiculos/{id}/edit(id=${v.idVehiculo})}" class="action-link" th:title="#{common.edit}"><i class="bi bi-pencil"></i></a>
+                    <form th:if="${esAdmin}" th:action="@{/vehiculos/{id}/state(id=${v.idVehiculo})}" method="post" class="inline-form">
+                        <button type="submit" class="action-link"
+                                th:classappend="${v.estadoVehiculo} ? 'action-link--danger' : 'action-link--success'"
+                                th:title="${v.estadoVehiculo} ? #{common.disable} : #{common.enable}">
+                            <i class="bi" th:classappend="${v.estadoVehiculo} ? 'bi-slash-circle' : 'bi-arrow-counterclockwise'"></i>
+                        </button>
+                    </form>
+                </div></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>

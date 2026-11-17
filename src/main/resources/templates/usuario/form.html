@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'usuarios', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Administración</p>
+            <h1 class="page-title" th:text="${title}">Formulario</h1>
+        </div>
+        <a th:href="@{/usuarios}" class="btn-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{${formAction}}" th:object="${usuario}" method="post" class="crud-form">
+            <div class="alert alert-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" maxlength="60">
+                    <small class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" th:field="*{apellido}" maxlength="60">
+                    <small class="field-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" th:field="*{telefono}" maxlength="20">
+                    <small class="field-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group--wide">
+                    <label for="email">Correo (usuario de acceso)</label>
+                    <input type="email" id="email" th:field="*{email}" maxlength="100">
+                    <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="idRol">Rol</label>
+                    <select id="idRol" name="idRol">
+                        <option value="">Seleccione un rol</option>
+                        <option th:each="r : ${roles}" th:value="${r.idRol}" th:text="${r.rol}"
+                                th:selected="${usuario.idRol != null and usuario.idRol == r.idRol}">Rol</option>
+                    </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('idRol')}" th:errors="*{idRol}"></small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="clave" th:text="${esNuevo} ? 'Contraseña' : 'Nueva contraseña (vacía = no cambiar)'">Contraseña</label>
+                <input type="password" id="clave" th:field="*{clave}" maxlength="72" autocomplete="new-password">
+                <small class="field-error" th:if="${#fields.hasErrors('clave')}" th:errors="*{clave}"></small>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/usuarios}" class="btn-secondary">Cancelar</a>
+                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> Guardar</button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>

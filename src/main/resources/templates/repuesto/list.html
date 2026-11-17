@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'repuestos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">eyebrow.manage</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:if="${esAdmin}" th:href="@{/repuestos/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> <span th:text="#{part.new}">New</span></a>
+    </header>
+
+    <section class="table-section">
+        <table class="loans-table">
+            <thead><tr><th th:text="#{part.name}">part.name</th><th th:text="#{part.eanShort}">part.eanShort</th><th th:text="#{part.priceShort}">part.priceShort</th><th th:text="#{part.stock}">part.stock</th><th th:text="#{part.models}">part.models</th><th th:text="#{common.status}">common.status</th><th th:text="#{common.actions}">common.actions</th></tr></thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(repuestos)}"><td colspan="7" class="empty-row" th:text="#{part.empty}">Empty</td></tr>
+            <tr th:each="r : ${repuestos}">
+                <td th:text="${r.nombre}">x</td>
+                <td th:text="${r.codigoEan}">x</td>
+                <td th:text="${'$ ' + #numbers.formatDecimal(r.precio, 1, 'DEFAULT', 2, 'DEFAULT')}">x</td>
+                <td th:text="${r.stock}">x</td>
+                <td th:text="${#strings.listJoin(r.modelos.![marca + ' ' + nombreModelo], ', ')}">x</td>
+                <td><span th:if="${r.estadoRepuesto}" class="badge badge-success" th:text="#{common.active}">Active</span>
+                    <span th:unless="${r.estadoRepuesto}" class="badge badge-neutral" th:text="#{common.inactive}">Inactive</span></td>
+                <td><div class="row-actions">
+                    <a th:href="@{/repuestos/{id}(id=${r.idRepuesto})}" class="action-link" th:title="#{common.view}"><i class="bi bi-eye"></i></a>
+                    <a th:if="${esAdmin}" th:href="@{/repuestos/{id}/edit(id=${r.idRepuesto})}" class="action-link" th:title="#{common.edit}"><i class="bi bi-pencil"></i></a>
+                    <form th:if="${esAdmin}" th:action="@{/repuestos/{id}/state(id=${r.idRepuesto})}" method="post" class="inline-form">
+                        <button type="submit" class="action-link"
+                                th:classappend="${r.estadoRepuesto} ? 'action-link--danger' : 'action-link--success'"
+                                th:title="${r.estadoRepuesto} ? #{common.disable} : #{common.enable}">
+                            <i class="bi" th:classappend="${r.estadoRepuesto} ? 'bi-slash-circle' : 'bi-arrow-counterclockwise'"></i>
+                        </button>
+                    </form>
+                </div></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>

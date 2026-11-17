@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="#{lang.code}" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(titulo, activePage, contenido)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${(#messages.msgOrNull(titulo) ?: titulo) + ' - ' + #messages.msg('app.name')}">Taller</title>
+    <script>
+        (function () {
+            var KEY = 'taller-theme';
+            var saved = null;
+            try { saved = localStorage.getItem(KEY); } catch (e) {}
+            var prefersDark = false;
+            try { prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+            document.documentElement.setAttribute('data-theme', saved ? saved : (prefersDark ? 'dark' : 'light'));
+
+            function paint() {
+                var btn = document.getElementById('theme-toggle');
+                if (!btn) { return; }
+                var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+                btn.querySelector('i').className = 'bi ' + (dark ? 'bi-sun' : 'bi-moon-stars');
+                btn.querySelector('span').textContent = dark ? btn.getAttribute('data-light') : btn.getAttribute('data-dark');
+            }
+            window.toggleTheme = function () {
+                var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                try { localStorage.setItem(KEY, next); } catch (e) {}
+                paint();
+            };
+            document.addEventListener('DOMContentLoaded', paint);
+        })();
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-title" th:text="#{app.name}">Taller</span>
+            <span class="brand-subtitle" th:text="#{app.subtitle}">Reparación automotriz</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/}" class="nav-item" th:classappend="${activePage == 'home'} ? 'active'">
+                <i class="bi bi-house-door"></i><span th:text="#{nav.home}">nav.home</span></a>
+
+            <p class="nav-group-title" th:text="#{nav.manage}">Gestión</p>
+            <a th:href="@{/modelos}" class="nav-item" th:classappend="${activePage == 'modelos'} ? 'active'">
+                <i class="bi bi-car-front"></i><span th:text="#{nav.models}">nav.models</span></a>
+            <a th:href="@{/vehiculos}" class="nav-item" th:classappend="${activePage == 'vehiculos'} ? 'active'">
+                <i class="bi bi-card-text"></i><span th:text="#{nav.vehicles}">nav.vehicles</span></a>
+            <a th:href="@{/repuestos}" class="nav-item" th:classappend="${activePage == 'repuestos'} ? 'active'">
+                <i class="bi bi-gear"></i><span th:text="#{nav.parts}">nav.parts</span></a>
+            <a th:href="@{/reparaciones}" class="nav-item" th:classappend="${activePage == 'reparaciones'} ? 'active'">
+                <i class="bi bi-tools"></i><span th:text="#{nav.repairs}">nav.repairs</span></a>
+
+            <p class="nav-group-title" th:text="#{nav.queries}">Consultas</p>
+            <a th:href="@{/busquedas/repuestos-por-modelo}" class="nav-item" th:classappend="${activePage == 'busq-repuestos'} ? 'active'">
+                <i class="bi bi-search"></i><span th:text="#{nav.partsByModel}">nav.partsByModel</span></a>
+            <a th:href="@{/busquedas/modelo-por-placa}" class="nav-item" th:classappend="${activePage == 'busq-placa'} ? 'active'">
+                <i class="bi bi-upc-scan"></i><span th:text="#{nav.modelByPlate}">nav.modelByPlate</span></a>
+
+            <th:block th:if="${esAdmin}">
+                <p class="nav-group-title" th:text="#{nav.admin}">Administración</p>
+                <a th:href="@{/usuarios}" class="nav-item" th:classappend="${activePage == 'usuarios'} ? 'active'">
+                    <i class="bi bi-person-circle"></i><span th:text="#{nav.users}">nav.users</span></a>
+                <a th:href="@{/roles}" class="nav-item" th:classappend="${activePage == 'roles'} ? 'active'">
+                    <i class="bi bi-shield-lock"></i><span th:text="#{nav.roles}">nav.roles</span></a>
+            </th:block>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user" th:if="${usuarioActual}">
+                <strong th:text="${esAdmin} ? #{user.role.admin} : #{user.role.mechanic}">Rol</strong>
+                <span th:text="${usuarioActual}">correo</span>
+            </div>
+
+            <div class="lang-switch">
+                <span class="lang-label" th:text="#{lang.label}">Idioma</span>
+                <a href="?lang=es" class="lang-btn" th:classappend="${#messages.msg('lang.code') == 'es'} ? 'active'">ES</a>
+                <a href="?lang=en" class="lang-btn" th:classappend="${#messages.msg('lang.code') == 'en'} ? 'active'">EN</a>
+            </div>
+
+            <button type="button" id="theme-toggle" onclick="toggleTheme()" th:attr="data-dark=#{theme.dark},data-light=#{theme.light}" class="side-btn" aria-label="Theme">
+                <i class="bi bi-moon-stars"></i><span th:text="#{theme.dark}">Modo oscuro</span>
+            </button>
+            <form th:if="${usuarioActual}" th:action="@{/logout}" method="post" class="inline-form">
+                <button type="submit" class="side-btn"><i class="bi bi-box-arrow-right"></i><span th:text="#{auth.logout}">Cerrar sesión</span></button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${#messages.msgOrNull(successMessage) ?: successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${#messages.msgOrNull(errorMessage) ?: errorMessage}"></div>
+        <th:block th:replace="${contenido}"></th:block>
+    </main>
+</div>
+</body>
+</html>

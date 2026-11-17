@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'repuestos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">eyebrow.manage</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:href="@{/repuestos}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">Back</span></a>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{${formAction}}" th:object="${repuesto}" method="post" class="crud-form">
+            <div class="alert alert-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+            <div class="form-row">
+                <div class="form-group form-group--wide">
+                    <label for="nombre" th:text="#{part.name}">part.name</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" maxlength="100">
+                    <small class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="codigoEan" th:text="#{part.ean}">part.ean</label>
+                    <input type="text" id="codigoEan" th:field="*{codigoEan}" maxlength="13" inputmode="numeric">
+                    <small class="field-error" th:if="${#fields.hasErrors('codigoEan')}" th:errors="*{codigoEan}"></small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="precio" th:text="#{part.price}">part.price</label>
+                    <input type="number" id="precio" th:field="*{precio}" step="0.01" min="0">
+                    <small class="field-error" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="stock" th:text="#{part.stock}">part.stock</label>
+                    <input type="number" id="stock" th:field="*{stock}" step="1" min="0">
+                    <small class="field-error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></small>
+                </div>
+                <div class="form-group form-group--wide">
+                    <label for="imagen" th:text="#{part.image}">part.image</label>
+                    <input type="text" id="imagen" th:field="*{imagen}" maxlength="200">
+                    <small class="field-error" th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"></small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion" th:text="#{part.desc}">part.desc</label>
+                <textarea id="descripcion" th:field="*{descripcion}" rows="3" maxlength="500"></textarea>
+                <small class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></small>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{part.models}">x</label>
+                <div class="checkbox-grid">
+                    <label class="checkbox-item" th:each="m : ${modelosOpciones}">
+                        <input type="checkbox" name="modelos" th:value="${m.idModelo}"
+                               th:checked="${repuesto.modelos.contains(m)}">
+                        <span th:text="${m.marca + ' ' + m.nombreModelo}">Modelo</span>
+                    </label>
+                </div>
+                <small class="field-error" th:if="${#fields.hasErrors('modelos')}" th:errors="*{modelos}"></small>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/repuestos}" class="btn-secondary" th:text="#{common.cancel}">Cancel</a>
+                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> <span th:text="#{common.save}">Save</span></button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>

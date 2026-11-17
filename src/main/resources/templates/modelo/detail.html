@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'modelos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.catalog}">eyebrow.catalog</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:href="@{/modelos}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">Back</span></a>
+    </header>
+
+    <section class="table-section">
+        <dl class="detail-grid">
+            <div class="detail-item"><dt th:text="#{model.brand}">model.brand</dt><dd th:text="${modelo.marca}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{model.nameShort}">model.nameShort</dt><dd th:text="${modelo.nombreModelo}">x</dd></div>
+            <div class="detail-item"><dt th:text="#{common.status}">common.status</dt><dd><span th:if="${modelo.estadoModelo}" class="badge badge-success" th:text="#{common.active}">Active</span>
+                <span th:unless="${modelo.estadoModelo}" class="badge badge-neutral" th:text="#{common.inactive}">Inactive</span></dd></div>
+        </dl>
+        <a th:if="${esAdmin}" th:href="@{/modelos/{id}/edit(id=${modelo.idModelo})}" class="welcome-cta"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">Edit</span></a>
+    </section>
+</div>
+</body>
+</html>

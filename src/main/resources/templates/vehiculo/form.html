@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(${title}, 'vehiculos', ~{::div.page-content})}">
+<body>
+<div class="page-content">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">eyebrow.manage</p>
+            <h1 class="page-title" th:text="#{${title}}">Title</h1>
+        </div>
+        <a th:href="@{/vehiculos}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">Back</span></a>
+    </header>
+
+    <section class="table-section">
+        <form th:action="@{${formAction}}" th:object="${vehiculo}" method="post" class="crud-form">
+            <div class="alert alert-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="placa" th:text="#{vehicle.plate}">vehicle.plate</label>
+                    <input type="text" id="placa" th:field="*{placa}" maxlength="7" placeholder="ABC-123">
+                    <small class="field-error" th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="colorPlaca" th:text="#{vehicle.color}">vehicle.color</label>
+                    <select id="colorPlaca" th:field="*{colorPlaca}">
+                        <option value="" th:text="#{common.select}">Select</option>
+                        <option th:each="o : ${colores}" th:value="${o}" th:text="#{${'enum.color.' + o.name()}}">Option</option>
+                    </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('colorPlaca')}" th:errors="*{colorPlaca}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="modelo" th:text="#{vehicle.model}">vehicle.model</label>
+                    <select id="modelo" name="modelo">
+                        <option value="" th:text="#{vehicle.selectModel}">Select</option>
+                        <option th:each="o : ${modelosOpciones}" th:value="${o.idModelo}"
+                                th:text="${o.marca + ' ' + o.nombreModelo}"
+                                th:selected="${vehiculo.modelo != null and vehiculo.modelo.idModelo == o.idModelo}">Option</option>
+                    </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group--wide">
+                    <label for="nombreDueno" th:text="#{vehicle.ownerName}">vehicle.ownerName</label>
+                    <input type="text" id="nombreDueno" th:field="*{nombreDueno}" maxlength="100">
+                    <small class="field-error" th:if="${#fields.hasErrors('nombreDueno')}" th:errors="*{nombreDueno}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="documentoDueno" th:text="#{vehicle.ownerDoc}">vehicle.ownerDoc</label>
+                    <input type="text" id="documentoDueno" th:field="*{documentoDueno}" maxlength="20">
+                    <small class="field-error" th:if="${#fields.hasErrors('documentoDueno')}" th:errors="*{documentoDueno}"></small>
+                </div>
+                <div class="form-group">
+                    <label for="telefonoDueno" th:text="#{vehicle.ownerPhone}">vehicle.ownerPhone</label>
+                    <input type="text" id="telefonoDueno" th:field="*{telefonoDueno}" maxlength="20">
+                    <small class="field-error" th:if="${#fields.hasErrors('telefonoDueno')}" th:errors="*{telefonoDueno}"></small>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/vehiculos}" class="btn-secondary" th:text="#{common.cancel}">Cancel</a>
+                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> <span th:text="#{common.save}">Save</span></button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>
