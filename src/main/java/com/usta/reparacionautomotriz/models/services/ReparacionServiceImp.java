@@ -59,7 +59,7 @@ public class ReparacionServiceImp implements ReparacionService {
     public void crear(ReparacionEntity r, String emailActual) {
         UserEntity actor = actor(emailActual);
         if (!r.getVehiculo().isEstadoVehiculo()) {
-            throw new ReglaNegocioException("vehiculo", "El vehículo está dado de baja");
+            throw new ReglaNegocioException("vehiculo", "err.repair.vehicleDisabled");
         }
         if (esAdmin(actor)) {
             validarMecanico(r.getMecanico());
@@ -76,16 +76,16 @@ public class ReparacionServiceImp implements ReparacionService {
     public void actualizar(ReparacionEntity r, String emailActual) {
         UserEntity actor = actor(emailActual);
         ReparacionEntity actual = reparacionDao.findById(r.getIdReparacion())
-                .orElseThrow(() -> new ReglaNegocioException(null, "Reparación no encontrada"));
+                .orElseThrow(() -> new ReglaNegocioException(null, "err.repair.notFound"));
         if (!puedeAcceder(actor, actual)) {
-            throw new ReglaNegocioException(null, "No puede editar reparaciones de otro mecánico");
+            throw new ReglaNegocioException(null, "err.repair.notOwner");
         }
         if (actual.getEstado() != EstadoReparacion.EN_PROCESO) {
-            throw new ReglaNegocioException(null, "Una reparación terminada o cancelada no se puede editar");
+            throw new ReglaNegocioException(null, "err.repair.notEditable");
         }
         boolean cambioVehiculo = !r.getVehiculo().getIdVehiculo().equals(actual.getVehiculo().getIdVehiculo());
         if (cambioVehiculo && !r.getVehiculo().isEstadoVehiculo()) {
-            throw new ReglaNegocioException("vehiculo", "El vehículo está dado de baja");
+            throw new ReglaNegocioException("vehiculo", "err.repair.vehicleDisabled");
         }
         actual.setFecha(r.getFecha());
         actual.setTipo(r.getTipo());
@@ -103,15 +103,15 @@ public class ReparacionServiceImp implements ReparacionService {
     public void cambiarEstado(Long id, EstadoReparacion nuevo, String emailActual) {
         UserEntity actor = actor(emailActual);
         ReparacionEntity actual = reparacionDao.findById(id)
-                .orElseThrow(() -> new ReglaNegocioException(null, "Reparación no encontrada"));
+                .orElseThrow(() -> new ReglaNegocioException(null, "err.repair.notFound"));
         if (!puedeAcceder(actor, actual)) {
-            throw new ReglaNegocioException(null, "No puede cambiar el estado de reparaciones de otro mecánico");
+            throw new ReglaNegocioException(null, "err.repair.notOwnerState");
         }
         if (actual.getEstado() != EstadoReparacion.EN_PROCESO) {
-            throw new ReglaNegocioException(null, "La reparación ya está en un estado final");
+            throw new ReglaNegocioException(null, "err.repair.finalState");
         }
         if (nuevo == EstadoReparacion.EN_PROCESO) {
-            throw new ReglaNegocioException(null, "Una reparación no puede volver a EN_PROCESO");
+            throw new ReglaNegocioException(null, "err.repair.noReopen");
         }
         actual.setEstado(nuevo);
         reparacionDao.save(actual);
@@ -133,7 +133,7 @@ public class ReparacionServiceImp implements ReparacionService {
     // RN-10: el responsable debe ser un usuario activo con rol MECANICO
     private void validarMecanico(UserEntity m) {
         if (m == null || !ROL_MECANICO.equals(m.getRol().getRol()) || !m.isEstadoUsu()) {
-            throw new ReglaNegocioException("mecanico", "El responsable debe ser un usuario activo con rol MECANICO");
+            throw new ReglaNegocioException("mecanico", "err.repair.badMechanic");
         }
     }
 }

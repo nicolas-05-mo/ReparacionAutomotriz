@@ -5,10 +5,10 @@
 <div class="page-content">
     <header class="page-header">
         <div>
-            <p class="eyebrow">Gestión</p>
-            <h1 class="page-title" th:text="${title}">Formulario</h1>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">x</p>
+            <h1 class="page-title" th:text="#{${title}}">Formulario</h1>
         </div>
-        <a th:href="@{/reparaciones}" class="btn-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+        <a th:href="@{/reparaciones}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">x</span></a>
     </header>
 
     <section class="table-section">
@@ -17,15 +17,15 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="fecha">Fecha</label>
+                    <label for="fecha" th:text="#{repair.date}">x</label>
                     <input type="date" id="fecha" th:field="*{fecha}">
                     <small class="field-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></small>
                 </div>
                 <div class="form-group">
-                    <label for="tipo">Tipo de reparación</label>
+                    <label for="tipo" th:text="#{repair.type}">x</label>
                     <select id="tipo" th:field="*{tipo}">
-                        <option value="">Seleccione</option>
-                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${#strings.replace(t, '_', ' ')}">Tipo</option>
+                        <option value="" th:text="#{common.select}">Seleccione</option>
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="#{'enum.tipo.' + ${t.name()}}">Tipo</option>
                     </select>
                     <small class="field-error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></small>
                 </div>
@@ -33,9 +33,9 @@
 
             <div class="form-row">
                 <div class="form-group form-group--wide">
-                    <label for="vehiculo">Vehículo</label>
+                    <label for="vehiculo" th:text="#{repair.vehicle}">x</label>
                     <select id="vehiculo" name="vehiculo">
-                        <option value="">Seleccione un vehículo</option>
+                        <option value="" th:text="#{repair.selectVehicle}">x</option>
                         <option th:each="v : ${vehiculosOpciones}" th:value="${v.idVehiculo}"
                                 th:text="${v.placa + ' - ' + v.modelo.marca + ' ' + v.modelo.nombreModelo}"
                                 th:selected="${reparacion.vehiculo != null and reparacion.vehiculo.idVehiculo == v.idVehiculo}">Vehículo</option>
@@ -43,11 +43,10 @@
                     <small class="field-error" th:if="${#fields.hasErrors('vehiculo')}" th:errors="*{vehiculo}"></small>
                 </div>
 
-                <!-- Administrador elige el mecánico; el mecánico queda asignado él mismo -->
                 <div class="form-group" th:if="${esAdmin}">
-                    <label for="mecanico">Mecánico responsable</label>
+                    <label for="mecanico" th:text="#{repair.mechanic}">x</label>
                     <select id="mecanico" name="mecanico">
-                        <option value="">Seleccione un mecánico</option>
+                        <option value="" th:text="#{repair.selectMechanic}">x</option>
                         <option th:each="u : ${mecanicosOpciones}" th:value="${u.idUsuario}"
                                 th:text="${u.nombre + ' ' + u.apellido}"
                                 th:selected="${reparacion.mecanico != null and reparacion.mecanico.idUsuario == u.idUsuario}">Mecánico</option>
@@ -58,14 +57,14 @@
             </div>
 
             <div class="form-group">
-                <label for="observaciones">Observaciones (opcional)</label>
+                <label for="observaciones" th:text="#{repair.notes}">x</label>
                 <textarea id="observaciones" th:field="*{observaciones}" rows="3" maxlength="500"></textarea>
                 <small class="field-error" th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}"></small>
             </div>
 
             <div class="form-actions">
-                <a th:href="@{/reparaciones}" class="btn-secondary">Cancelar</a>
-                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> Guardar</button>
+                <a th:href="@{/reparaciones}" class="btn-secondary" th:text="#{common.cancel}">x</a>
+                <button type="submit" class="welcome-cta"><i class="bi bi-check-circle"></i> <span th:text="#{common.save}">x</span></button>
             </div>
         </form>
     </section>

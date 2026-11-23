@@ -5,34 +5,42 @@
 <div class="page-content">
     <header class="page-header">
         <div>
-            <p class="eyebrow">Administración</p>
-            <h1 class="page-title" th:text="${title}">Usuarios</h1>
+            <p class="eyebrow" th:text="#{eyebrow.admin}">x</p>
+            <h1 class="page-title" th:text="#{${title}}">Usuarios</h1>
         </div>
-        <a th:href="@{/usuarios/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> Nuevo usuario</a>
+        <a th:href="@{/usuarios/new}" class="welcome-cta"><i class="bi bi-plus-circle"></i> <span th:text="#{user.new}">x</span></a>
     </header>
 
     <section class="table-section">
         <table class="loans-table">
             <thead>
-            <tr><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+            <tr>
+                <th th:text="#{user.firstName}">x</th>
+                <th th:text="#{user.emailShort}">x</th>
+                <th th:text="#{user.phone}">x</th>
+                <th th:text="#{user.role}">x</th>
+                <th th:text="#{common.status}">x</th>
+                <th th:text="#{common.actions}">x</th>
+            </tr>
             </thead>
             <tbody>
+            <tr th:if="${#lists.isEmpty(usuarios)}"><td colspan="6" class="empty-row" th:text="#{user.empty}">x</td></tr>
             <tr th:each="u : ${usuarios}">
                 <td th:text="${u.nombre + ' ' + u.apellido}">Nombre</td>
                 <td th:text="${u.email}">correo</td>
                 <td th:text="${u.telefono}">Teléfono</td>
                 <td th:text="${u.rol.rol}">Rol</td>
                 <td>
-                    <span th:if="${u.estadoUsu}" class="badge badge-success">Activo</span>
-                    <span th:unless="${u.estadoUsu}" class="badge badge-neutral">Dado de baja</span>
+                    <span th:if="${u.estadoUsu}" class="badge badge-success" th:text="#{common.active}">x</span>
+                    <span th:unless="${u.estadoUsu}" class="badge badge-neutral" th:text="#{common.inactive}">x</span>
                 </td>
                 <td>
                     <div class="row-actions">
-                        <a th:href="@{/usuarios/{id}/edit(id=${u.idUsuario})}" class="action-link" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{/usuarios/{id}/edit(id=${u.idUsuario})}" class="action-link" th:title="#{common.edit}"><i class="bi bi-pencil"></i></a>
                         <form th:action="@{/usuarios/{id}/state(id=${u.idUsuario})}" method="post" class="inline-form">
                             <button type="submit" class="action-link"
                                     th:classappend="${u.estadoUsu} ? 'action-link--danger' : 'action-link--success'"
-                                    th:title="${u.estadoUsu} ? 'Dar de baja' : 'Reactivar'">
+                                    th:title="${u.estadoUsu} ? #{common.disable} : #{common.enable}">
                                 <i class="bi" th:classappend="${u.estadoUsu} ? 'bi-slash-circle' : 'bi-arrow-counterclockwise'"></i>
                             </button>
                         </form>

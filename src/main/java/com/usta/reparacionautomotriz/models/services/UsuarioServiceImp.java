@@ -63,13 +63,13 @@ public class UsuarioServiceImp implements UsuarioService {
     public void crear(UsuarioForm f) {
         String email = f.getEmail().trim().toLowerCase();
         if (f.getClave() == null || f.getClave().isBlank()) {
-            throw new ReglaNegocioException("clave", "La contraseña es obligatoria");
+            throw new ReglaNegocioException("clave", "err.user.passwordRequired");
         }
         if (userDao.existsByEmail(email)) {
-            throw new ReglaNegocioException("email", "Ya existe un usuario con ese correo");
+            throw new ReglaNegocioException("email", "err.user.emailDuplicate");
         }
         RoleEntity rol = roleDao.findById(f.getIdRol())
-                .orElseThrow(() -> new ReglaNegocioException("idRol", "Rol no válido"));
+                .orElseThrow(() -> new ReglaNegocioException("idRol", "err.user.roleInvalid"));
 
         UserEntity u = new UserEntity();
         u.setNombre(f.getNombre().trim());
@@ -86,13 +86,13 @@ public class UsuarioServiceImp implements UsuarioService {
     @Transactional
     public void actualizar(UsuarioForm f) {
         UserEntity u = userDao.findById(f.getIdUsuario())
-                .orElseThrow(() -> new ReglaNegocioException(null, "Usuario no encontrado"));
+                .orElseThrow(() -> new ReglaNegocioException(null, "err.user.notFound"));
         String email = f.getEmail().trim().toLowerCase();
         if (userDao.existsByEmailAndIdUsuarioNot(email, u.getIdUsuario())) {
-            throw new ReglaNegocioException("email", "Ya existe un usuario con ese correo");
+            throw new ReglaNegocioException("email", "err.user.emailDuplicate");
         }
         RoleEntity rol = roleDao.findById(f.getIdRol())
-                .orElseThrow(() -> new ReglaNegocioException("idRol", "Rol no válido"));
+                .orElseThrow(() -> new ReglaNegocioException("idRol", "err.user.roleInvalid"));
 
         u.setNombre(f.getNombre().trim());
         u.setApellido(f.getApellido().trim());
@@ -109,9 +109,9 @@ public class UsuarioServiceImp implements UsuarioService {
     @Transactional
     public void changeState(Long id, String emailActual) {
         UserEntity u = userDao.findById(id)
-                .orElseThrow(() -> new ReglaNegocioException(null, "Usuario no encontrado"));
+                .orElseThrow(() -> new ReglaNegocioException(null, "err.user.notFound"));
         if (u.getEmail().equalsIgnoreCase(emailActual) && u.isEstadoUsu()) {
-            throw new ReglaNegocioException(null, "No puede darse de baja a sí mismo");
+            throw new ReglaNegocioException(null, "err.user.selfDisable");
         }
         u.setEstadoUsu(!u.isEstadoUsu());
         userDao.save(u);

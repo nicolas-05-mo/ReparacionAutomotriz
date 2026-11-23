@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/static/css/**", "/js/**", "/images/**", "/login").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
                         // Solo el administrador gestiona usuarios y roles
                         .requestMatchers("/usuarios/**", "/roles/**").hasRole("ADMINISTRADOR")
                         // Restricciones de creación/edición para administradores

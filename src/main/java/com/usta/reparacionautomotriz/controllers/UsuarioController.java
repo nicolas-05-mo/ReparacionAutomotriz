@@ -24,14 +24,14 @@ public class UsuarioController {
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("title", "Usuarios");
+        model.addAttribute("title", "user.title");
         model.addAttribute("usuarios", usuarioService.findAll());
         return "usuario/list";
     }
 
     @GetMapping("/new")
     public String nuevo(Model model) {
-        prepararForm(model, new UsuarioForm(), "Nuevo usuario", "/usuarios", true);
+        prepararForm(model, new UsuarioForm(), "user.new", "/usuarios", true);
         return "usuario/form";
     }
 
@@ -39,17 +39,17 @@ public class UsuarioController {
     public String crear(@Valid @ModelAttribute("usuario") UsuarioForm form,
                         BindingResult result, Model model, RedirectAttributes flash) {
         if (result.hasErrors()) {
-            prepararForm(model, form, "Nuevo usuario", "/usuarios", true);
+            prepararForm(model, form, "user.new", "/usuarios", true);
             return "usuario/form";
         }
         try {
             usuarioService.crear(form);
         } catch (ReglaNegocioException e) {
             registrarError(result, e);
-            prepararForm(model, form, "Nuevo usuario", "/usuarios", true);
+            prepararForm(model, form, "user.new", "/usuarios", true);
             return "usuario/form";
         }
-        flash.addFlashAttribute("successMessage", "Usuario creado correctamente");
+        flash.addFlashAttribute("successMessage", "msg.user.created");
         return "redirect:/usuarios";
     }
 
@@ -57,10 +57,10 @@ public class UsuarioController {
     public String editar(@PathVariable Long id, Model model, RedirectAttributes flash) {
         UsuarioForm form = usuarioService.obtenerForm(id);
         if (form == null) {
-            flash.addFlashAttribute("errorMessage", "Usuario no encontrado");
+            flash.addFlashAttribute("errorMessage", "msg.user.notFound");
             return "redirect:/usuarios";
         }
-        prepararForm(model, form, "Editar usuario", "/usuarios/" + id, false);
+        prepararForm(model, form, "user.edit", "/usuarios/" + id, false);
         return "usuario/form";
     }
 
@@ -70,17 +70,17 @@ public class UsuarioController {
                              BindingResult result, Model model, RedirectAttributes flash) {
         form.setIdUsuario(id);
         if (result.hasErrors()) {
-            prepararForm(model, form, "Editar usuario", "/usuarios/" + id, false);
+            prepararForm(model, form, "user.edit", "/usuarios/" + id, false);
             return "usuario/form";
         }
         try {
             usuarioService.actualizar(form);
         } catch (ReglaNegocioException e) {
             registrarError(result, e);
-            prepararForm(model, form, "Editar usuario", "/usuarios/" + id, false);
+            prepararForm(model, form, "user.edit", "/usuarios/" + id, false);
             return "usuario/form";
         }
-        flash.addFlashAttribute("successMessage", "Usuario actualizado correctamente");
+        flash.addFlashAttribute("successMessage", "msg.user.updated");
         return "redirect:/usuarios";
     }
 
@@ -88,9 +88,9 @@ public class UsuarioController {
     public String cambiarEstado(@PathVariable Long id, Principal principal, RedirectAttributes flash) {
         try {
             usuarioService.changeState(id, principal.getName());
-            flash.addFlashAttribute("successMessage", "Estado del usuario actualizado");
+            flash.addFlashAttribute("successMessage", "msg.user.stateChanged");
         } catch (ReglaNegocioException e) {
-            flash.addFlashAttribute("errorMessage", e.getMessage());
+            flash.addFlashAttribute("errorMessage", e.getCodigo());
         }
         return "redirect:/usuarios";
     }
@@ -105,9 +105,9 @@ public class UsuarioController {
 
     private void registrarError(BindingResult result, ReglaNegocioException e) {
         if (e.getCampo() == null) {
-            result.reject("regla", e.getMessage());
+            result.reject(e.getCodigo(), e.getArgs(), e.getCodigo());
         } else {
-            result.rejectValue(e.getCampo(), "regla", e.getMessage());
+            result.rejectValue(e.getCampo(), e.getCodigo(), e.getArgs(), e.getCodigo());
         }
     }
 }

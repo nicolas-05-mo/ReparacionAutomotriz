@@ -5,32 +5,32 @@
 <div class="page-content">
     <header class="page-header">
         <div>
-            <p class="eyebrow">Gestión</p>
-            <h1 class="page-title" th:text="${title}">Detalle</h1>
+            <p class="eyebrow" th:text="#{eyebrow.manage}">x</p>
+            <h1 class="page-title" th:text="#{${title}}">Detalle</h1>
         </div>
-        <a th:href="@{/reparaciones}" class="btn-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+        <a th:href="@{/reparaciones}" class="btn-secondary"><i class="bi bi-arrow-left"></i> <span th:text="#{common.back}">x</span></a>
     </header>
 
     <section class="table-section">
         <dl class="detail-grid">
-            <div class="detail-item"><dt>Fecha</dt><dd th:text="${reparacion.fecha}">Fecha</dd></div>
-            <div class="detail-item"><dt>Estado</dt>
+            <div class="detail-item"><dt th:text="#{repair.date}">x</dt><dd th:text="${reparacion.fecha}">Fecha</dd></div>
+            <div class="detail-item"><dt th:text="#{common.status}">x</dt>
                 <dd>
-                    <span th:if="${reparacion.estado.name() == 'EN_PROCESO'}" class="badge badge-warning">En proceso</span>
-                    <span th:if="${reparacion.estado.name() == 'TERMINADO'}" class="badge badge-success">Terminado</span>
-                    <span th:if="${reparacion.estado.name() == 'CANCELADO'}" class="badge badge-neutral">Cancelado</span>
+                    <span th:if="${reparacion.estado.name() == 'EN_PROCESO'}" class="badge badge-warning" th:text="#{repair.status.inprocess}">x</span>
+                    <span th:if="${reparacion.estado.name() == 'TERMINADO'}" class="badge badge-success" th:text="#{repair.status.done}">x</span>
+                    <span th:if="${reparacion.estado.name() == 'CANCELADO'}" class="badge badge-neutral" th:text="#{repair.status.cancelled}">x</span>
                 </dd>
             </div>
-            <div class="detail-item"><dt>Tipo</dt><dd th:text="${#strings.replace(reparacion.tipo, '_', ' ')}">Tipo</dd></div>
-            <div class="detail-item"><dt>Mecánico</dt><dd th:text="${reparacion.mecanico.nombre + ' ' + reparacion.mecanico.apellido}">Mecánico</dd></div>
-            <div class="detail-item"><dt>Vehículo</dt>
+            <div class="detail-item"><dt th:text="#{repair.typeShort}">x</dt><dd th:text="#{'enum.tipo.' + ${reparacion.tipo.name()}}">Tipo</dd></div>
+            <div class="detail-item"><dt th:text="#{repair.mechanicShort}">x</dt><dd th:text="${reparacion.mecanico.nombre + ' ' + reparacion.mecanico.apellido}">Mecánico</dd></div>
+            <div class="detail-item"><dt th:text="#{repair.vehicle}">x</dt>
                 <dd th:text="${reparacion.vehiculo.placa + ' - ' + reparacion.vehiculo.modelo.marca + ' ' + reparacion.vehiculo.modelo.nombreModelo}">Vehículo</dd></div>
-            <div class="detail-item"><dt>Dueño</dt><dd th:text="${reparacion.vehiculo.nombreDueno}">Dueño</dd></div>
-            <div class="detail-item detail-item--wide"><dt>Observaciones</dt>
+            <div class="detail-item"><dt th:text="#{repair.owner}">x</dt><dd th:text="${reparacion.vehiculo.nombreDueno}">Dueño</dd></div>
+            <div class="detail-item detail-item--wide"><dt th:text="#{repair.notesShort}">x</dt>
                 <dd th:text="${reparacion.observaciones != null and reparacion.observaciones != ''} ? ${reparacion.observaciones} : '-'">-</dd></div>
         </dl>
         <a th:if="${reparacion.estado.name() == 'EN_PROCESO'}"
-           th:href="@{/reparaciones/{id}/edit(id=${reparacion.idReparacion})}" class="welcome-cta"><i class="bi bi-pencil"></i> Editar</a>
+           th:href="@{/reparaciones/{id}/edit(id=${reparacion.idReparacion})}" class="welcome-cta"><i class="bi bi-pencil"></i> <span th:text="#{common.edit}">x</span></a>
     </section>
 </div>
 </body>

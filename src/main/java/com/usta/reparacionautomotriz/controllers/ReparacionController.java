@@ -39,7 +39,7 @@ public class ReparacionController {
 
     @GetMapping
     public String listar(Principal principal, Model model) {
-        model.addAttribute("title", "Reparaciones");
+        model.addAttribute("title", "repair.title");
         model.addAttribute("reparaciones", reparacionService.listarPara(principal.getName()));
         return "reparacion/list";
     }
@@ -48,10 +48,10 @@ public class ReparacionController {
     public String detalle(@PathVariable Long id, Principal principal, Model model, RedirectAttributes flash) {
         ReparacionEntity r = reparacionService.buscarPara(id, principal.getName());
         if (r == null) {
-            flash.addFlashAttribute("errorMessage", "Reparación no encontrada");
+            flash.addFlashAttribute("errorMessage", "msg.repair.notFound");
             return "redirect:/reparaciones";
         }
-        model.addAttribute("title", "Detalle de la reparación");
+        model.addAttribute("title", "repair.detail");
         model.addAttribute("reparacion", r);
         return "reparacion/detail";
     }
@@ -60,7 +60,7 @@ public class ReparacionController {
     public String nueva(Principal principal, Model model) {
         ReparacionEntity r = new ReparacionEntity();
         r.setFecha(LocalDate.now());
-        prepararForm(model, r, "Nueva reparación", "/reparaciones", principal.getName());
+        prepararForm(model, r, "repair.new", "/reparaciones", principal.getName());
         return "reparacion/form";
     }
 
@@ -68,17 +68,17 @@ public class ReparacionController {
     public String crear(@Valid @ModelAttribute("reparacion") ReparacionEntity reparacion,
                         BindingResult result, Principal principal, Model model, RedirectAttributes flash) {
         if (result.hasErrors()) {
-            prepararForm(model, reparacion, "Nueva reparación", "/reparaciones", principal.getName());
+            prepararForm(model, reparacion, "repair.new", "/reparaciones", principal.getName());
             return "reparacion/form";
         }
         try {
             reparacionService.crear(reparacion, principal.getName());
         } catch (ReglaNegocioException e) {
             registrarError(result, e);
-            prepararForm(model, reparacion, "Nueva reparación", "/reparaciones", principal.getName());
+            prepararForm(model, reparacion, "repair.new", "/reparaciones", principal.getName());
             return "reparacion/form";
         }
-        flash.addFlashAttribute("successMessage", "Reparación registrada en estado EN_PROCESO");
+        flash.addFlashAttribute("successMessage", "msg.repair.created");
         return "redirect:/reparaciones";
     }
 
@@ -86,14 +86,14 @@ public class ReparacionController {
     public String editar(@PathVariable Long id, Principal principal, Model model, RedirectAttributes flash) {
         ReparacionEntity r = reparacionService.buscarPara(id, principal.getName());
         if (r == null) {
-            flash.addFlashAttribute("errorMessage", "Reparación no encontrada");
+            flash.addFlashAttribute("errorMessage", "msg.repair.notFound");
             return "redirect:/reparaciones";
         }
         if (r.getEstado() != EstadoReparacion.EN_PROCESO) {
-            flash.addFlashAttribute("errorMessage", "Una reparación terminada o cancelada no se puede editar");
+            flash.addFlashAttribute("errorMessage", "err.repair.notEditable");
             return "redirect:/reparaciones";
         }
-        prepararForm(model, r, "Editar reparación", "/reparaciones/" + id, principal.getName());
+        prepararForm(model, r, "repair.edit", "/reparaciones/" + id, principal.getName());
         return "reparacion/form";
     }
 
@@ -103,17 +103,17 @@ public class ReparacionController {
                              BindingResult result, Principal principal, Model model, RedirectAttributes flash) {
         reparacion.setIdReparacion(id);
         if (result.hasErrors()) {
-            prepararForm(model, reparacion, "Editar reparación", "/reparaciones/" + id, principal.getName());
+            prepararForm(model, reparacion, "repair.edit", "/reparaciones/" + id, principal.getName());
             return "reparacion/form";
         }
         try {
             reparacionService.actualizar(reparacion, principal.getName());
         } catch (ReglaNegocioException e) {
             registrarError(result, e);
-            prepararForm(model, reparacion, "Editar reparación", "/reparaciones/" + id, principal.getName());
+            prepararForm(model, reparacion, "repair.edit", "/reparaciones/" + id, principal.getName());
             return "reparacion/form";
         }
-        flash.addFlashAttribute("successMessage", "Reparación actualizada correctamente");
+        flash.addFlashAttribute("successMessage", "msg.repair.updated");
         return "redirect:/reparaciones";
     }
 
@@ -123,9 +123,10 @@ public class ReparacionController {
                                 Principal principal, RedirectAttributes flash) {
         try {
             reparacionService.cambiarEstado(id, estado, principal.getName());
-            flash.addFlashAttribute("successMessage", "Reparación marcada como " + estado);
+            flash.addFlashAttribute("successMessage",
+                    estado == EstadoReparacion.TERMINADO ? "msg.repair.completed" : "msg.repair.cancelled");
         } catch (ReglaNegocioException e) {
-            flash.addFlashAttribute("errorMessage", e.getMessage());
+            flash.addFlashAttribute("errorMessage", e.getCodigo());
         }
         return "redirect:/reparaciones";
     }
@@ -150,9 +151,9 @@ public class ReparacionController {
 
     private void registrarError(BindingResult result, ReglaNegocioException e) {
         if (e.getCampo() == null) {
-            result.reject("regla", e.getMessage());
+            result.reject(e.getCodigo(), e.getArgs(), e.getCodigo());
         } else {
-            result.rejectValue(e.getCampo(), "regla", e.getMessage());
+            result.rejectValue(e.getCampo(), e.getCodigo(), e.getArgs(), e.getCodigo());
         }
     }
 }

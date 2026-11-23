@@ -22,12 +22,12 @@ public class ReparacionEntity implements Serializable {
     @Column(name = "id_reparacion")
     private Long idReparacion;
 
-    @NotNull(message = "La fecha es obligatoria")
+    @NotNull(message = "{val.repair.date.required}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
 
-    @NotNull(message = "Seleccione el tipo de reparación")                    // RN-09
+    @NotNull(message = "{val.repair.type.required}")                          // RN-09
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false, length = 30)
     private TipoReparacion tipo;
@@ -41,13 +41,13 @@ public class ReparacionEntity implements Serializable {
     @Column(name = "observaciones", length = 500)
     private String observaciones;
 
-    @NotNull(message = "Seleccione un vehículo")
+    @NotNull(message = "{val.repair.vehicle.required}")
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_vehiculo", nullable = false)
     private VehiculoEntity vehiculo;
 
     // Mecánico responsable (RN-10)
-    @NotNull(message = "Seleccione un mecánico")
+    @NotNull(message = "{val.repair.mechanic.required}")
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
     private UserEntity mecanico;
